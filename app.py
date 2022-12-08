@@ -213,7 +213,9 @@ def delUser():
 @app.before_request
 def check():
     url = request.path
-    noUrl = ["/blog/addBlog", "/blog/delBlog", "/blog/updBlog", "/blog/toUpd", "/space"]
+    noUrl = ["/blog/addBlog", "/blog/delBlog", "/blog/updBlog",
+             "/blog/toUpd", "/space","/user/delUser",
+             "/user/updUser","/user/toUpd"]
     if url in noUrl:
         _id = session.get('uid', None)
         print('permission check: ', _id)
