@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
-    <link rel="stylesheet" href="../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
 </head>
 <body>
-<div class="card" id="card" style="width: 600px;height: 300px;">
+<div class="card" id="card" style="width: 600px;height: 330px;">
     <div class="card-body">
         <div class="alert alert-info " role="alert" id="tip" >{{ msg }}</div>
+
         <form action="/tologin" method="post" id="form1">
             <label for="ip1" class="form-label">邮箱</label>
             <input class="form-control" type="text" name="mail" id="ip1">
@@ -22,9 +23,12 @@
             <input class="form-control" type="text" name="mail" id="rip1">
             <label for="rip2" class="form-label">密码</label>
             <input class="form-control" type="password" name="password" id="rip2">
+            <label for="rip2" class="form-label">确认密码</label>
+            <input class="form-control" type="password" name="password2" id="rip2">
             <button class="btn btn-primary mt-2" type="submit">确认注册</button>
             <div class="btn btn-success mt-2" id="btn" onclick="switch_status(false)">返回登录</div>
         </form>
+        <a class="btn btn-outline-dark mt-1" href="/admin/login" style="margin-left: 80%" >管理员登录</a>
     </div>
 </div>
 
@@ -34,12 +38,15 @@
         var f1 = document.getElementById('form1')
         var f2 = document.getElementById('form2')
         var card = document.getElementById('card')
+
         if (status) {
             f1.style.display = 'none'
             f2.style.display = ''
+            card.style.height='400px';
         } else {
             f1.style.display = ''
             f2.style.display = 'none'
+            card.style.height='330px';
         }
     }
 
@@ -54,7 +61,7 @@
 
 
     body {
-        background-image: url("../static/bg.jpg");
+        background-image: url("../../static/bg.jpg");
         background-size: 100%;
     }
 </style>

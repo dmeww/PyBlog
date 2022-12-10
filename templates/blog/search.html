@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>博客系统</title>
-    <link rel="stylesheet" href="../static/css/bootstrap.css">
+    <title>搜索结果</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
 </head>
 <body>
 
-<header class="p-3 bg-dark text-white">
+<header class="p-3 text-bg-dark">
 
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                 PyBlog
             </a>
@@ -18,9 +18,6 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
                 style="margin-left: 20px;">
                 <li><a href="/" class="nav-link px-2 text-white">所有博客</a></li>
-                {% if login==True %}
-                    <li><a href="/space" class="nav-link px-2 text-white">我的博客</a></li>
-                {% endif %}
             </ul>
 
             <form action="/search" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -38,60 +35,32 @@
     <div class="row" style="width: 900px;">
         <div class="card col-9">
             <div class="card-body">
-                <h2 class="p-3">So Good To See You</h2>
-                <hr>
-                <!-- Example
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Blog Date</h6>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-                    </div>
-                </div> -->
+                <h2 class="p-3">搜索结果</h2>
 
                 {% for blog in blogs|reverse %}
-                    <div class="card mt-4">
+                    <div class="card mt-4 shadow">
                         <div class="card-body">
                             <h5 class="card-title" onclick="gotoblog({{ blog.bid }})">{{ blog.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">作者: {{ blog.umail }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">作者:{{ blog.umail }}</h6>
                             <h6 class="card-subtitle mb-2 text-muted">日期 &nbsp;{{ blog.date }}</h6>
                             <p class="card-text">{{ blog.content }}</p>
                         </div>
                     </div>
                 {% else %}
-                    <div>目前没有博客呢</div>
+                    <div>没有相关博客</div>
                 {% endfor %}
+
 
             </div>
         </div>
         <div class="col-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="text-center">
-                        {% if login==False %}
-                            <div class="nologin">
-                                <h2>你好</h2>
-                                <a href="/login" class="btn btn-outline-info me-2 mt-2">登&nbsp;录</a>
-                            </div>
-                        {% else %}
-                            <div class="login">
-                                <p>用户</p>
-                                <p>{{ mail }}</p>
-                                <a href="/space" class="btn btn-warning mt-2">个人中心</a>
 
-                                <a href="/logout" class="btn btn-outline-info me-2 mt-2">登&nbsp;出</a>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-<div class="shadow bg-dark text-white">
+<div class="shadow text-white bg-dark">
     <footer class="py-3 my-4">
-        <ul class="nav justify-content-center border-bottom pb-3">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">回到主页</a></li>
             <li class="nav-item"><a href="https://github.com/tinsdyg" class="nav-link px-2 text-muted">Github</a></li>
         </ul>
@@ -112,7 +81,7 @@
     }
 
     body {
-        background-image: url("../static/bg2.jpg");
+        background-image: url("../../static/bg2.jpg");
         background-size: 100%;
     }
 
@@ -126,9 +95,8 @@
         cursor: pointer;
     }
 
-    .shadow {
-        margin-top: 340px;
-
+    .shadow{
+        margin-top: 180px;
     }
 
 </style>

@@ -1,8 +1,8 @@
-#coding=utf-8
+# coding=utf-8
 from pymysql import *
 
 
-class MysqlUnit(object):
+class MysqlTool(object):
     def __init__(self, username, password, host, port, database):
         self.username = username
         self.password = password
@@ -22,10 +22,22 @@ class MysqlUnit(object):
             print(e.__class__.__name__, ":", e)
         self.cursor = self.conn.cursor()
 
-    def get_all_blog(self):
+    def get_all_blog_by_admin(self):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute('select * from blog')
+            li = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return li
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
+
+    def get_all_blog(self):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute('select * from blog where status = 0 or status = 3')
             li = self.cursor.fetchall()
             self.conn.commit()
             self.cursor.close()
@@ -46,6 +58,18 @@ class MysqlUnit(object):
             print(e.__class__.__name__, ":", e)
             return None
 
+    def search_blog(self, keyword):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f'select * from blog where title like "%{keyword}%" and status = 0')
+            li = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return li
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
+
     def get_blog(self, bid):
         try:
             self.cursor = self.conn.cursor()
@@ -54,18 +78,6 @@ class MysqlUnit(object):
             self.conn.commit()
             self.cursor.close()
             return blog
-        except Exception as e:
-            print(e.__class__.__name__, ":", e)
-            return None
-
-    def search_blog(self, keyword):
-        try:
-            self.cursor = self.conn.cursor()
-            self.cursor.execute(f'select * from blog where title like "%{keyword}%"')
-            li = self.cursor.fetchall()
-            self.conn.commit()
-            self.cursor.close()
-            return li
         except Exception as e:
             print(e.__class__.__name__, ":", e)
             return None
@@ -94,10 +106,22 @@ class MysqlUnit(object):
             print(e.__class__.__name__, ":", e)
             return None
 
+    def get_all_user(self):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"select * from user where uid != 3")
+            users = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return users
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
+
     def add_user(self, mail, passwd):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"insert into user(password, mail)values ('{passwd}','{mail}')")
+            self.cursor.execute(f"insert into user(password, mail,status)values ('{passwd}','{mail}',0)")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -106,11 +130,11 @@ class MysqlUnit(object):
             self.conn.rollback()
             return False
 
-    def add_blog(self, uid, title, content, date, umail):
+    def add_blog(self, uid, title, content, date, umail, status):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute(
-                f"insert into blog (content, title, uid, date,umail)values ('{content}','{title}',{uid},'{date}','{umail}');")
+                f"insert into blog (content, title, uid, date,umail,status,comment)values ('{content}','{title}',{uid},'{date}','{umail}',{status},0);")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -123,6 +147,7 @@ class MysqlUnit(object):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"delete from blog where uid={uid} and bid={bid};")
+            self.cursor.execute(f'delete from comment where bid ={bid}')
             self.conn.commit()
             self.cursor.close()
             return True
@@ -131,11 +156,11 @@ class MysqlUnit(object):
             self.conn.rollback()
             return False
 
-    def upd_blog(self, uid, bid, title, content):
+    def upd_blog(self, uid, bid, title, content, status):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute(
-                f"update blog set title = '{title}',content='{content}' where uid = {uid} and bid = {bid};")
+                f"update blog set title = '{title}',content='{content}',status={status} where uid = {uid} and bid = {bid};")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -175,3 +200,102 @@ class MysqlUnit(object):
             print(e.__class__.__name__, ":", e)
             self.conn.rollback()
             return False
+
+    def get_comments(self, bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"select * from comment where bid = '{bid}'")
+            comments = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return comments
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
+
+    def ban_user(self, uid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f'update user set status = 1 where uid = {uid}')
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def deban_user(self, uid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f'update user set status = 0 where uid = {uid}')
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def ban_blog(self, bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f'update blog set status = 2 where bid = {bid}')
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def deban_blog(self, bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f'update blog set status = 1 where bid = {bid}')
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def add_comment(self, content, umail, bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"insert into comment (content, umail, bid) values ('{content}','{umail}',{bid});")
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def ban_comment(self,bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"update blog set comment = 1 where bid ={bid}")
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def deban_comment(self,bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"update blog set comment = 0 where bid ={bid}")
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+
+Sql = MysqlTool('root', 'root', '127.0.0.1', 3306, 'python')

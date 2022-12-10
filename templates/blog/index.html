@@ -2,23 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ blog.title }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>博客系统</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
 </head>
 <body>
 
-<header class="p-3 text-bg-dark">
+<header class="p-3 bg-dark text-white">
 
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start">
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                 PyBlog
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
                 style="margin-left: 20px;">
-                <li><a href="/" class="nav-link px-2 text-white">所有博客</a></li>
+                <li><a href="/static" class="nav-link px-2 text-white">所有博客</a></li>
                 {% if login==True %}
                     <li><a href="/space" class="nav-link px-2 text-white">我的博客</a></li>
                 {% endif %}
@@ -26,7 +25,7 @@
 
             <form action="/search" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                 <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..."
-                       aria-label="Search" name="search">
+                       aria-label="Search" name="keyword">
             </form>
 
 
@@ -39,12 +38,30 @@
     <div class="row" style="width: 900px;">
         <div class="card col-9">
             <div class="card-body">
-                <h2>{{ blog.title }}</h2>
-                <h6 class="card-subtitle mb-2 text-muted" style="text-align: right">作者:{{ blog.umail }}&nbsp;日期 &nbsp;{{ blog.date }}  </h6>
+                <h2 class="p-3">So Good To See You</h2>
                 <hr>
-                <div id="content">
+                <!-- Example
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Blog Date</h6>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the card's content.</p>
+                    </div>
+                </div> -->
 
-                </div>
+                {% for blog in blogs|reverse %}
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title" onclick="gotoblog({{ blog.bid }})">{{ blog.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">作者: {{ blog.umail }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">日期 &nbsp;{{ blog.date }}</h6>
+                            <p class="card-text">{{ blog.content }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div>目前没有博客呢</div>
+                {% endfor %}
 
             </div>
         </div>
@@ -52,7 +69,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-center">
-
                         {% if login==False %}
                             <div class="nologin">
                                 <h2>你好</h2>
@@ -63,10 +79,10 @@
                                 <p>用户</p>
                                 <p>{{ mail }}</p>
                                 <a href="/space" class="btn btn-warning mt-2">个人中心</a>
+
                                 <a href="/logout" class="btn btn-outline-info me-2 mt-2">登&nbsp;出</a>
                             </div>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
@@ -75,23 +91,18 @@
 </div>
 <div class="shadow bg-dark text-white">
     <footer class="py-3 my-4">
-        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">回到顶部</a></li>
+        <ul class="nav justify-content-center border-bottom pb-3">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">回到主页</a></li>
             <li class="nav-item"><a href="https://github.com/tinsdyg" class="nav-link px-2 text-muted">Github</a></li>
         </ul>
         <p class="text-center text-muted">@Author 计科2001 邓永贵</p>
     </footer>
 </div>
-<textarea id="data" style="display: none;">{{ blog.content }}</textarea>
 </body>
-<script type="module">
-    var txt = document.getElementById('txt')
-    var content = document.getElementById('content')
-    var data = document.getElementById('data')
-    content.innerHTML = marked.parse(data.value)
-    console.log(data.value)
-
-
+<script>
+    function gotoblog(bid) {
+        window.location.href = '/blog/' + bid
+    }
 </script>
 <style>
     .row {
@@ -101,8 +112,18 @@
     }
 
     body {
-        background-image: url("../static/bg2.jpg");
+        background-image: url("../../static/bg2.jpg");
         background-size: 100%;
+    }
+
+    p {
+        overflow: hidden; /*内容超出后隐藏*/
+        text-overflow: ellipsis; /* 超出内容显示为省略号 */
+        white-space: nowrap; /* 文本不进行换行 */
+    }
+
+    .card-title:hover {
+        cursor: pointer;
     }
 
     .shadow {

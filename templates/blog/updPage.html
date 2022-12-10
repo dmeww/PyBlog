@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>新增博客</title>
-    <link rel="stylesheet" href="../static/css/bootstrap.css">
-    <script src="../static/js/marked.js"></script>
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+    <script src="../../static/js/marked.js"></script>
 </head>
 <body>
 <div class="card">
@@ -20,6 +20,11 @@
                         <span class="input-group-text" id="basic-addon3">Title</span>
                         <input name="title" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="{{ blog.title }}">
                     </div>
+                    <label for="status">状态</label>
+                    <select id="status" class="form-select" aria-label="Default select example" name="status">
+                        <option value="1" {% if blog.status == 1 %} selected {% endif %}>私密</option>
+                        <option value="0" {% if blog.status == 0 %} selected {% endif %}>公开</option>
+                    </select>
                     <label for="content">博客内容(支持Markdown语法)</label> <br>
                     <div class="input-group">
 
@@ -55,7 +60,7 @@
 </script>
 <style>
     body {
-        background-image: url("../static/bg2.jpg");
+        background-image: url("../../static/bg2.jpg");
         background-size: 100%;
     }
 

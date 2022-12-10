@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员后台</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+</head>
+<body>
+
+<div class="box card shadow">
+    <h3 class="text-center" style="margin-top: 10px;">正常博客管理</h3>
+    <div class="row mt-5" style="min-height: 300px;">
+        <div class="col-1"></div>
+        <div class="card col-8">
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">用户</th>
+                    <th scope="col">博客标题</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">操作1:博客</th>
+                    <th scope="col">操作2:评论区</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for blog in blogs|reverse %}
+                    <tr>
+                        <th scope="row">{{ blog.umail }}</th>
+                        <td>{{ blog.title }}</td>
+                        <td>
+                            {% if blog.status == 0 %}
+                                公开
+                            {% elif blog.status == 1 %}
+                                私密
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/admin/banBlog?bid={{ blog.bid }}"
+                               class="btn btn-outline-primary p-2 mt-2">封禁</a>
+                        </td>
+                        <td>
+                            {% if blog.comment == 0 %}
+                                <a href="/admin/banComment?bid={{ blog.bid }}"
+                                   class="btn btn-outline-primary p-2 mt-2">禁止评论</a>
+                            {% else %}
+                                <a href="/admin/debanComment?bid={{ blog.bid }}"
+                                   class="btn btn-outline-primary p-2 mt-2">解禁评论</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">现在没有博客</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card col-2 text-center">
+            <b>管理员:</b> <br> {{ mail }}
+            <hr>
+            <a href="/admin" class="btn btn-outline-success p-2 mt-2">管理菜单</a>
+            <hr>
+            <a href="/logout" class="btn btn-outline-warning p-2 mt-2">退出登录</a>
+            <hr>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+
+</body>
+<style>
+    body {
+        background-image: url("../../static/bg2.jpg");
+        background-size: 100%;
+    }
+
+    .box {
+        margin-left: 10%;
+        margin-right: 15%;
+        min-height: 600px;
+        min-width: 1200px;
+        margin-top: 100px;
+        opacity: 80%;
+    }
+
+</style>
+</html>

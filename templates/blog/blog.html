@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ blog.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+<header class="p-3 text-bg-dark">
+
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                PyBlog
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+                style="margin-left: 20px;">
+                <li><a href="/" class="nav-link px-2 text-white">所有博客</a></li>
+                {% if login==True %}
+                    <li><a href="/space" class="nav-link px-2 text-white">我的博客</a></li>
+                {% endif %}
+            </ul>
+
+            <form action="/search" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..."
+                       aria-label="Search" name="search">
+            </form>
+
+
+        </div>
+    </div>
+</header>
+
+
+<div class="contain ">
+    <div class="row" style="width: 900px;">
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <h2>{{ blog.title }}</h2>
+                    <h6 class="card-subtitle mb-2 text-muted" style="text-align: right">
+                        作者:{{ blog.umail }}&nbsp;
+                        日期:{{ blog.date }} &nbsp;
+                        状态:
+                        {% if blog.status == 0 %}
+                            公开
+                        {% elif blog.status == 1 %}
+                            私密
+                        {% else %}
+                            封禁
+                        {% endif %}
+                    </h6>
+                    <hr>
+                    <div id="content">
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="card mt-2">
+                <div class="card-body">
+                    <h3>评论区</h3>
+                    {% if blog.comment == 0 %}
+                        <form action="/comment/addComment" method="post">
+                            <input type="text" name="mail" value="{{ mail }}" style="display: none">
+                            <input type="text" name="bid" value="{{ blog.bid }}" style="display: none">
+                            <label for="content"></label>
+                            <textarea name="content" type="text" class="form-control" placeholder="留下你友好的评论吧"
+                                      id="content"></textarea>
+                            <button class="btn btn-outline-danger mt-3" type="submit">提交评论</button>
+                        </form>
+                        <div class="mt-2">
+                            {% for comment in comments|reverse %}
+                                <div class="alert alert-info" role="alert">
+                                    {{ comment.umail }} 说: <br>
+                                    <b>{{ comment.content }}</b>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info" role="alert">
+                                    暂无评论
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger" role="alert">
+                            本篇博客禁止评论
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+
+                        {% if login==False %}
+                            <div class="nologin">
+                                <h2>你好</h2>
+                                <a href="/login" class="btn btn-outline-info me-2 mt-2">登&nbsp;录</a>
+                            </div>
+                        {% else %}
+                            <div class="login">
+                                <p>用户</p>
+                                <p>{{ mail }}</p>
+                                <a href="/space" class="btn btn-warning mt-2">个人中心</a>
+                                <a href="/logout" class="btn btn-outline-info me-2 mt-2">登&nbsp;出</a>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="shadow bg-dark text-white">
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">回到顶部</a></li>
+            <li class="nav-item"><a href="https://github.com/tinsdyg" class="nav-link px-2 text-muted">Github</a></li>
+        </ul>
+        <p class="text-center text-muted">@Author 计科2001 邓永贵</p>
+    </footer>
+</div>
+<textarea id="data" style="display: none;">{{ blog.content }}</textarea>
+</body>
+<script type="module">
+    var txt = document.getElementById('txt')
+    var content = document.getElementById('content')
+    var data = document.getElementById('data')
+    content.innerHTML = marked.parse(data.value)
+    console.log(data.value)
+
+
+</script>
+<style>
+    .row {
+        margin-left: 25%;
+        margin-right: 25%;
+        margin-top: 30px;
+    }
+
+    body {
+        background-image: url("../../static/bg2.jpg");
+        background-size: 100%;
+    }
+
+    .shadow {
+        margin-top: 340px;
+
+    }
+
+</style>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+</head>
+<body>
+<div class="card" id="card" style="width: 600px;height: 330px;">
+    <div class="card-body">
+        <div class="alert alert-info " role="alert" id="tip" >请使用管理员账户登录</div>
+
+        <form action="/admin/tologin" method="post" id="form1">
+            <label for="ip1" class="form-label">邮箱</label>
+            <input class="form-control" type="text" name="mail" id="ip1">
+            <label for="ip2" class="form-label">密码</label>
+            <input class="form-control" type="password" name="password" id="ip2">
+            <button class="btn btn-primary mt-2" type="submit">登录</button>
+        </form>
+
+        <a class="btn btn-outline-dark mt-1" href="/login" style="margin-left: 70%" >返回普通用户登录</a>
+    </div>
+</div>
+
+</body>
+
+<style>
+    .card {
+        margin-left: 30%;
+        margin-top: 15%;
+    }
+
+
+    body {
+        background-image: url("../../static/bg.jpg");
+        background-size: 100%;
+    }
+</style>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员后台</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+</head>
+<body>
+
+<div class="box card shadow">
+    <h3 class="text-center" style="margin-top: 10px;">用户管理</h3>
+    <div class="row mt-5" style="min-height: 300px;">
+        <div class="col-1"></div>
+        <div class="card col-4 text-center">
+            <div class="card-body">
+                <h2>用户管理</h2>
+                <hr>
+                <a href="/admin/user" class="btn btn-outline-primary mt-3 fs-3">正常用户</a>
+                <hr>
+                <a href="/admin/bannedUser" class="btn btn-outline-primary mt-3 fs-3">已封禁用户</a>
+                <hr>
+
+            </div>
+        </div>
+        <div class="card col-4 text-center">
+            <div class="card-body">
+                <h2>博客管理</h2>
+                <hr>
+                <a href="/admin/blog" class="btn btn-outline-primary mt-3 fs-3">正常博客</a>
+                <hr>
+                <a href="/admin/bannedBlog" class="btn btn-outline-primary mt-3 fs-3">已封禁博客</a>
+                <hr>
+            </div>
+        </div>
+
+        <div class="card col-2 text-center">
+            <b>管理员:</b> <br> {{ mail }}
+            <hr>
+            <a href="/" class="btn btn-outline-info p-2 mt-2">前往主页</a>
+            <a href="/logout" class="btn btn-outline-warning p-2 mt-2">退出登录</a>
+            <hr>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+
+</body>
+<style>
+    body {
+        background-image: url("../../static/bg2.jpg");
+        background-size: 100%;
+    }
+
+    .box {
+        margin-left: 10%;
+        margin-right: 15%;
+        min-height: 600px;
+        min-width: 1200px;
+        margin-top: 100px;
+        opacity: 80%;
+    }
+</style>
+</html>
