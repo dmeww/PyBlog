@@ -11,18 +11,23 @@ class Blog(object):
         self.bid = -1
         self.umail = None
         self.status = None
-        self.comment=None
+        self.comment = None
+        self.report = None
 
     def __str__(self):
         return f'{self.bid}:{self.umail}--{type(self.status)}'
 
 
 class User(object):
-    def __init__(self, mail, password, uid, status):
+    def __init__(self, mail, password, uid, status, report):
         self.mail = mail
         self.password = password
         self.uid = uid
         self.status = status
+        self.report = report
+
+    def __str__(self):
+        return f'{self.mail}:{self.status}'
 
 
 class Comment(object):
@@ -49,11 +54,14 @@ def maptoblog(target):
         blog.umail = target[5]
         blog.status = int(target[6])
         blog.comment = int(target[7])
+        blog.report = int(target[8])
         return blog
 
 
 def maptobloglist(target):
     li = []
+    if target is None:
+        return []
     for i in target:
         li.append(maptoblog(i))
     return li
@@ -63,12 +71,15 @@ def maptouser(target):
     if target is None:
         return None
     else:
-        user = User(uid=int(target[0]), password=target[1], mail=target[2], status=int(target[3]))
+        user = User(uid=int(target[0]), password=target[1], mail=target[2], status=int(target[3]),
+                    report=int(target[4]))
         return user
 
 
 def maptouserlist(target):
     li = []
+    if target is None:
+        return []
     for i in target:
         li.append(maptouser(i))
     return li
@@ -88,6 +99,8 @@ def maptocomment(target):
 
 def maptocommentlist(target):
     li = []
+    if target is None:
+        return []
     for i in target:
         li.append(maptocomment(i))
     return li

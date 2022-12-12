@@ -2,6 +2,8 @@ from flask import Flask, request, session, render_template
 
 from modules.admin import admin
 from modules.blog import blog
+from modules.entity import maptouser
+from modules.sqltool import Sql
 from modules.user import user
 from modules.comment import comment
 
@@ -15,26 +17,31 @@ def login_check():
     url = request.path
     noUrl = ["/blog/addBlog", "/blog/delBlog", "/blog/updBlog",
              "/blog/toUpd", "/blog/toAdd", "/space", "/user/delUser",
-             "/user/updUser", "/user/toUpd", "/comment/addComment"]
+             "/user/updUser", "/user/toUpd", "/comment/addComment",
+             "/user/report","/blog/report"]
     if url in noUrl:
         _id = session.get('uid', None)
         print('敏感操作: ', url, ": ", _id)
         if not _id:
             return render_template('user/login.html', msg='您未登录,不能进行此操作')
         else:
+            user_status  = maptouser(Sql.get_user(session.get('mail'))).status
+            session['status'] = user_status
             return
     else:
         return
 
 
-@app.before_request
+@admin.before_request
 def admin_check():
     url = request.path
-    noUrl = ["/admin", "/admin/blog"]
-    if url in noUrl:
+    noUrl = ["/admin/login", "/admin/tologin"]
+    if url not in noUrl:
         _status = session.get('status')
+        if _status is None:
+            return render_template('user/login.html',msg='您未登录,禁止访问此页面')
         if _status != 3:
-            return render_template('result.html', msg='您没有权限!')
+            return render_template('result.html', msg='您不是管理员,禁止访问此页面!')
         else:
             return
     else:
@@ -44,7 +51,7 @@ def admin_check():
 @app.before_request
 def ban_check():
     url = request.path
-    noUrl = ['/blog/toUpd', "/blog/updBlog", "/blog/addBlog", "/blog/toAdd", "/blog/delBlog"]
+    noUrl = ['/blog/toUpd', "/blog/updBlog", "/blog/addBlog", "/blog/toAdd", '/blog/delBlog','/comment/addComment']
     if url in noUrl:
         _status = session.get('status')
         if _status == 1:

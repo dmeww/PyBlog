@@ -8,42 +8,41 @@
 <body>
 
 <div class="box card shadow">
-    <h3 class="text-center" style="margin-top: 10px;">正常用户管理</h3>
-
+    <h3 class="text-center" style="margin-top: 10px;">受举报用户管理</h3>
     <div class="row mt-5" style="min-height: 300px;">
         <div class="col-1"></div>
-        <div class="col-8">
+        <div class="card col-8">
             <form action="/admin/user/search" method="get">
-                <input type="text" name="type" value="0" style="display: none">
+                <input type="text" name="type" value="1" style="display: none">
                 <input type="text" name="keyword" class="form-control" placeholder="按邮箱搜索用户">
                 <input type="submit" class="btn border">
             </form>
-            <div class="card">
-                <table class="table table-hover text-center">
-                    <thead>
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">用户邮箱</th>
+                    <th scope="col">受举报次数</th>
+                    <th scope="col">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users|reverse %}
                     <tr>
-                        <th scope="col">用户ID</th>
-                        <th scope="col">用户邮箱</th>
-                        <th scope="col">操作</th>
+                        <th scope="row">{{ user.mail }}</th>
+                        <td>{{ user.report }}</td>
+                        <td>
+                            <a href="/admin/banUser?uid={{ user.uid }}" class="btn btn-outline-info">封禁该用户</a>
+                            <a href="/admin/clearReport?uid={{ user.uid }}"
+                               class="btn btn-outline-info">清空该用户的受举报次数</a>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for user in users|reverse %}
-                            <tr>
-                                <th scope="row">{{ user.uid }}</th>
-                                <td>{{ user.mail }}</td>
-                                <td>
-                                    <a href="/admin/banUser?uid={{ user.uid }}" class="btn btn-outline-info">封禁</a>
-                                </td>
-                            </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="3">现在没有普通用户</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% else %}
+                    <tr>
+                        <td colspan="3">现在没有用户收到举报</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
         <div class="card col-2 text-center">
             <b>管理员:</b> <br> {{ mail }}

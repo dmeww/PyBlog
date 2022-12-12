@@ -29,7 +29,7 @@ def login():
     if passwd == '' or passwd is None:
         return render_template('user/login.html', msg='密码不能为空')
 
-    l_user = User(mail=mail, password=passwd, uid=None,status=0)
+    l_user = User(mail=mail, password=passwd, uid=None, status=0, report=0)
     d_user = maptouser(Sql.get_user(mail))
 
     if d_user is None:
@@ -42,6 +42,7 @@ def login():
             session['mail'] = d_user.mail
             session['passwd'] = d_user.password
             session['status'] = d_user.status
+            print(d_user)
             return redirect('/')
 
 
@@ -60,7 +61,7 @@ def register():
     passwd2 = request.form.get('password2')
 
     if passwd != passwd2:
-        return render_template('user/login.html',msg='两次密码必须一致')
+        return render_template('user/login.html', msg='两次密码必须一致')
     if validateEmail(mail) is False:
         return render_template('user/login.html', msg='邮箱格式不对')
     if passwd == '' or passwd is None:
@@ -90,6 +91,8 @@ def upd_user():
     if n_passwd == '' or None:
         msg = '新密码不能为空'
         return render_template('result.html', msg=msg)
+    if len(n_passwd) <= 8:
+        return render_template('user/login.html', msg='新密码必须大于等于8位')
     if Sql.upd_user(uid, mail, n_passwd, n_mail):
         msg = '修改成功,请重新登录'
         session.clear()
@@ -109,3 +112,16 @@ def delUser():
     else:
         msg = '服务器错误,注销失败'
     return render_template('result.html', msg=msg)
+
+
+@user.route('/user/report')
+def reportUser():
+    mail = request.args.get('mail')
+    l_mail = session.get('mail')
+    if mail == l_mail:
+        print(mail, l_mail)
+        return render_template('result.html', msg='自己不能举报自己')
+    if Sql.report_user(mail):
+        return render_template('result.html', msg='举报成功!')
+    else:
+        return render_template('result.html', msg='举报失败,请查看服务器日志')

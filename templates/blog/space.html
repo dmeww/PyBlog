@@ -36,13 +36,25 @@
     <div class="row" style="width: 900px;">
         <div class="card col-9">
             <div class="card-body">
-                <h2 class="p-3">我的博客</h2>
+                <form action="/blog/search" method="get">
+                    <h2 class="p-3">我的博客</h2>
+                    <input type="text" name="uid" value="{{ uid }}" style="display: none">
+                    <input type="text" name="keyword" placeholder="回车搜索" class=" form-control" width="80px;">
+                    <input type="submit" class="btn border">
+                </form>
                 <hr>
                 {% for blog in blogs|reverse %}
-                    <div class="card mt-4 shadow">
+                    <div class="{% if blog.status == 2 %}alert alert-danger{% elif blog.status == 0 %}alert alert-success{% else %}alert alert-secondary{% endif %} text-dark mt-4 shadow">
                         <div class="card-body">
                             <h5 class="card-title" onclick="gotoblog({{ blog.bid }})">{{ blog.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">作者:{{ blog.umail }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">状态:
+                                {% if blog.status == 0 %}
+                                    正常
+                                {% elif blog.status == 1 %}
+                                    私密
+                                {% else %}
+                                    封禁
+                                {% endif %}</h6>
                             <h6 class="card-subtitle mb-2 text-muted">日期 &nbsp;{{ blog.date }}</h6>
                             <a href="/blog/toUpd?bid={{ blog.bid }}" class="btn btn-primary">
                                 修改博客
@@ -65,6 +77,7 @@
                     <div class="text-center">
                         <h2>你好!</h2>
                         <h4>用户 {{ mail }}</h4>
+                        <h5>状态: {% if status == 0 %}正常{% else %}封禁{% endif %}</h5>
                         <h5 class="p-2">博客数量: {{ num }}</h5>
                     </div>
                 </div>
@@ -123,10 +136,12 @@
     .card-title:hover {
         cursor: pointer;
     }
-    .footer{
+
+    .footer {
         margin-top: 200px;
     }
-    #btn{
+
+    #btn {
         width: 140px;
     }
 

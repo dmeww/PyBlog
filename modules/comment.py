@@ -1,4 +1,4 @@
-from flask import Blueprint, session, render_template, request
+from flask import Blueprint, session, render_template, request, redirect
 from modules.sqltool import Sql
 from modules.entity import *
 
@@ -12,7 +12,7 @@ def add_comment():
     bid = request.form.get('bid')
 
     if Sql.add_comment(content, umail, bid):
-        return render_template('result.html', msg="评论成功")
+        return redirect(f'/blog/{bid}')
     else:
         return render_template('result.html', msg="评论失败")
 

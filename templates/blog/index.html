@@ -17,7 +17,7 @@
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
                 style="margin-left: 20px;">
-                <li><a href="/static" class="nav-link px-2 text-white">所有博客</a></li>
+                <li><a href="/" class="nav-link px-2 text-white">所有博客</a></li>
                 {% if login==True %}
                     <li><a href="/space" class="nav-link px-2 text-white">我的博客</a></li>
                 {% endif %}
@@ -51,7 +51,7 @@
                 </div> -->
 
                 {% for blog in blogs|reverse %}
-                    <div class="card mt-4">
+                    <div class="alert alert-primary text-dark mt-4">
                         <div class="card-body">
                             <h5 class="card-title" onclick="gotoblog({{ blog.bid }})">{{ blog.title }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">作者: {{ blog.umail }}</h6>
@@ -78,6 +78,7 @@
                             <div class="login">
                                 <p>用户</p>
                                 <p>{{ mail }}</p>
+                                <p>状态:{% if status == 0 %}正常{% else %}封禁{% endif %}</p>
                                 <a href="/space" class="btn btn-warning mt-2">个人中心</a>
 
                                 <a href="/logout" class="btn btn-outline-info me-2 mt-2">登&nbsp;出</a>

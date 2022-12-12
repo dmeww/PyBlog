@@ -109,7 +109,7 @@ class MysqlTool(object):
     def get_all_user(self):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"select * from user where uid != 3")
+            self.cursor.execute(f"select * from user where status != 3")
             users = self.cursor.fetchall()
             self.conn.commit()
             self.cursor.close()
@@ -121,7 +121,7 @@ class MysqlTool(object):
     def add_user(self, mail, passwd):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"insert into user(password, mail,status)values ('{passwd}','{mail}',0)")
+            self.cursor.execute(f"insert into user(password, mail,status,report)values ('{passwd}','{mail}',0,0)")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -134,7 +134,7 @@ class MysqlTool(object):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute(
-                f"insert into blog (content, title, uid, date,umail,status,comment)values ('{content}','{title}',{uid},'{date}','{umail}',{status},0);")
+                f"insert into blog (content, title, uid, date,umail,status,comment,report)values ('{content}','{title}',{uid},'{date}','{umail}',{status},0,0);")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -273,7 +273,7 @@ class MysqlTool(object):
             print(e.__class__.__name__, ":", e)
             return False
 
-    def ban_comment(self,bid):
+    def ban_comment(self, bid):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"update blog set comment = 1 where bid ={bid}")
@@ -285,7 +285,7 @@ class MysqlTool(object):
             print(e.__class__.__name__, ":", e)
             return False
 
-    def deban_comment(self,bid):
+    def deban_comment(self, bid):
         try:
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"update blog set comment = 0 where bid ={bid}")
@@ -296,6 +296,95 @@ class MysqlTool(object):
             self.conn.rollback()
             print(e.__class__.__name__, ":", e)
             return False
+
+    def report_user(self, mail):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"update user set report = report+1 where mail ='{mail}'")
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def report_blog(self, bid):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"update blog set report = report+1 where bid ={bid}")
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def clear_report(self, table, id):
+        if table is 'user':
+            col = 'uid'
+        else:
+            col = 'bid'
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f"update {table} set report = 0 where {col} ={id}")
+            self.conn.commit()
+            self.cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(e.__class__.__name__, ":", e)
+            return False
+
+    def user_search_blog(self, uid, keyword):
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(f'select * from blog where title like "%{keyword}%" and uid = {uid}')
+            li = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return li
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
+
+    def admin_search_user(self, keyword, type):
+        if type == 0:
+            sqlstr = f"select * from user where mail like '%{keyword}% and status =0'"
+        elif type == 1:
+            sqlstr = f"select * from user where mail like '%{keyword}%' and report != 0 and status =0"
+        else:
+            sqlstr = f"select * from user where mail like '%{keyword}%' and status = 1"
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(sqlstr)
+            li = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return li
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
+
+    # 博客管理类型 0=正常博客搜索 1=受举报博客 2=已封禁博客
+    def admin_search_blog(self, keyword, type):
+        if type == 0:
+            sqlstr = f"select * from blog where title like '%{keyword}%' and status != 2"
+        elif type == 1:
+            sqlstr = f"select * from blog where title like '%{keyword}%' and status != 2 and report !=0"
+        else:
+            sqlstr = f"select * from blog where title like '%{keyword}%' and status = 2"
+        try:
+            self.cursor = self.conn.cursor()
+            self.cursor.execute(sqlstr)
+            li = self.cursor.fetchall()
+            self.conn.commit()
+            self.cursor.close()
+            return li
+        except Exception as e:
+            print(e.__class__.__name__, ":", e)
+            return None
 
 
 Sql = MysqlTool('root', 'root', '127.0.0.1', 3306, 'python')

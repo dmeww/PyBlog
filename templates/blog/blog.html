@@ -26,7 +26,7 @@
 
             <form action="/search" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                 <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..."
-                       aria-label="Search" name="search">
+                       aria-label="Search" name="keyword">
             </form>
 
 
@@ -59,6 +59,12 @@
                     </div>
 
                 </div>
+            <div style="margin-top: 50px;margin-bottom: 20px; text-align: right;">
+                <hr>
+                <span class="p-2">博客内容有感不适?</span>
+                <a href="/blog/report?bid={{ blog.bid }}" class="btn btn-outline-secondary">举报博客</a>
+                <a href="/user/report?mail={{ blog.umail }}" class="btn btn-outline-secondary">举报用户</a>
+            </div>
             </div>
             <div class="card mt-2">
                 <div class="card-body">
@@ -106,6 +112,7 @@
                             <div class="login">
                                 <p>用户</p>
                                 <p>{{ mail }}</p>
+                                <p>状态:{% if status == 0 %}正常{% else %}封禁{% endif %}</p>
                                 <a href="/space" class="btn btn-warning mt-2">个人中心</a>
                                 <a href="/logout" class="btn btn-outline-info me-2 mt-2">登&nbsp;出</a>
                             </div>
