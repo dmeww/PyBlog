@@ -387,4 +387,4 @@ class MysqlTool(object):
             return None
 
 
-Sql = MysqlTool('root', 'root', '127.0.0.1', 3306, 'python')
+Sql = MysqlTool('root', '123456', '121.37.185.55', 3306, 'python')
