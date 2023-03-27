@@ -155,6 +155,6 @@ def search_blogs():
     keyword = request.args.get('keyword')
     num = Sql.count_blog(session.get('uid'))
     if keyword is None or len(keyword) ==0:
-        return render_template('blog/space.html', blogs=[], mail=session.get('mail'), num=num,uid=session.get('uid'))
+        return render_template('blog/space.html', blogs=[], mail=session.get('mail'), num=num,uid=session.get('uid'),status=session.get('status'))
     result = maptobloglist(Sql.user_search_blog(uid, keyword))
-    return render_template('blog/space.html', blogs=result, mail=session.get('mail'), num=num,uid=session.get('uid'))
+    return render_template('blog/space.html', blogs=result, mail=session.get('mail'), num=num,uid=session.get('uid'),status=session.get('status'))

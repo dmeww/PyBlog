@@ -1,59 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>博客系统</title>
     <link rel="stylesheet" href="../../static/css/bootstrap.css">
 </head>
+
 <body>
 
-<header class="p-3 text-bg-dark">
+    <header class="p-3 text-bg-dark">
 
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                PyBlog
-            </a>
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    PyBlog
+                </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
-                style="margin-left: 20px;">
-                <li><a href="/" class="nav-link px-2 text-white">所有博客</a></li>
-                <li><a href="/space" class="nav-link px-2 text-white">我的博客</a></li>
-            </ul>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+                    style="margin-left: 20px;">
+                    <li><a href="/" class="nav-link px-2 text-white">所有博客</a></li>
+                    <li><a href="/space" class="nav-link px-2 text-white">我的博客</a></li>
+                </ul>
 
-            <form action="/search" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..."
-                       aria-label="Search" name="keyword">
-            </form>
-
-
-        </div>
-    </div>
-</header>
-
-
-<div class="contain ">
-    <div class="row" style="width: 900px;">
-        <div class="card col-9">
-            <div class="card-body">
-                <form action="/blog/search" method="get">
-                    <h2 class="p-3">我的博客</h2>
-                    <input type="text" name="uid" value="{{ uid }}" style="display: none">
-                    <input type="text" name="keyword" placeholder="回车搜索" class=" form-control" width="80px;">
-                    <input type="submit" class="btn border">
+                <form action="/search" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..."
+                        aria-label="Search" name="keyword">
                 </form>
-                <hr>
-                {% for blog in blogs|reverse %}
-                    <div class="{% if blog.status == 2 %}alert alert-danger{% elif blog.status == 0 %}alert alert-success{% else %}alert alert-secondary{% endif %} text-dark mt-4 shadow">
+
+
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container ">
+        <div class="row">
+            <div class="card col-12 col-lg-9">
+                <div class="card-body">
+                    <form action="/blog/search" method="get">
+                        <h2 class="p-3">我的博客</h2>
+                        <input type="text" name="uid" value="{{ uid }}" style="display: none">
+                        <input type="text" name="keyword" placeholder="回车搜索" class=" form-control" width="80px;">
+                        <input type="submit" class="btn border">
+                    </form>
+                    <hr>
+                    {% for blog in blogs|reverse %}
+                    <div
+                        class="{% if blog.status == 2 %}alert alert-danger{% elif blog.status == 0 %}alert alert-success{% else %}alert alert-secondary{% endif %} text-dark mt-4 shadow">
                         <div class="card-body">
                             <h5 class="card-title" onclick="gotoblog({{ blog.bid }})">{{ blog.title }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">状态:
                                 {% if blog.status == 0 %}
-                                    正常
+                                正常
                                 {% elif blog.status == 1 %}
-                                    私密
+                                私密
                                 {% else %}
-                                    封禁
+                                封禁
                                 {% endif %}</h6>
                             <h6 class="card-subtitle mb-2 text-muted">日期 &nbsp;{{ blog.date }}</h6>
                             <a href="/blog/toUpd?bid={{ blog.bid }}" class="btn btn-primary">
@@ -64,51 +67,52 @@
                             </a>
                         </div>
                     </div>
-                {% else %}
+                    {% else %}
                     <div>目前没有博客呢</div>
-                {% endfor %}
+                    {% endfor %}
 
 
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="text-center">
-                        <h2>你好!</h2>
-                        <h4>用户 {{ mail }}</h4>
-                        <h5>状态: {% if status == 0 %}正常{% else %}封禁{% endif %}</h5>
-                        <h5 class="p-2">博客数量: {{ num }}</h5>
-                    </div>
                 </div>
             </div>
-            <div class="card mt-2">
-                <div class="card-body">
-                    <div class="text-center">
-                        <a href="/blog/toAdd" class="btn btn-success" id="btn">
-                            新建博客
-                        </a>
-                        <a href="/user/toUpd" class="btn btn-outline-primary mt-3" id="btn">
-                            修改个人信息
-                        </a>
-                        <a href="/logout" class="btn btn-outline-success mt-3" id="btn">
-                            退出登录
-                        </a>
+            <div class="col-12 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h2>你好!</h2>
+                            <h4>用户 {{ mail }}</h4>
+                            <p>状态:{% if status == 0 %}正常{% else %}封禁{% endif %}</p>
+                            <h5 class="p-2">博客数量: {{ num }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <a href="/blog/toAdd" class="btn btn-success" id="btn">
+                                新建博客
+                            </a>
+                            <a href="/user/toUpd" class="btn btn-outline-primary mt-3" id="btn">
+                                修改个人信息
+                            </a>
+                            <a href="/logout" class="btn btn-outline-success mt-3" id="btn">
+                                退出登录
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="footer shadow bg-dark text-white">
-    <footer class="py-3 my-4">
-        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">回到主页</a></li>
-            <li class="nav-item"><a href="https://github.com/tinsdyg" class="nav-link px-2 text-muted">Github</a></li>
-        </ul>
-        <p class="text-center text-muted">@Author 计科2001 邓永贵</p>
-    </footer>
-</div>
+    <div class="footer shadow bg-dark text-white">
+        <footer class="py-3 my-4 bg-dark">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">回到主页</a></li>
+                <li class="nav-item"><a href="https://github.com/tinsdyg" class="nav-link px-2 text-muted">Github</a>
+                </li>
+            </ul>
+            <p class="text-center text-muted">@Author 计科2001 邓永贵</p>
+        </footer>
+    </div>
 </body>
 <script>
     function gotoblog(bid) {
@@ -117,9 +121,8 @@
 </script>
 <style>
     .row {
-        margin-left: 25%;
-        margin-right: 25%;
         margin-top: 30px;
+        min-height: 80vh;
     }
 
     body {
@@ -128,9 +131,12 @@
     }
 
     p {
-        overflow: hidden; /*内容超出后隐藏*/
-        text-overflow: ellipsis; /* 超出内容显示为省略号 */
-        white-space: nowrap; /* 文本不进行换行 */
+        overflow: hidden;
+        /*内容超出后隐藏*/
+        text-overflow: ellipsis;
+        /* 超出内容显示为省略号 */
+        white-space: nowrap;
+        /* 文本不进行换行 */
     }
 
     .card-title:hover {
@@ -138,12 +144,13 @@
     }
 
     .footer {
-        margin-top: 200px;
+        height: 80px;
+        margin-bottom: -80px;
     }
 
     #btn {
         width: 140px;
     }
-
 </style>
+
 </html>
