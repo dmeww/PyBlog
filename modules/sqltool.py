@@ -22,6 +22,15 @@ class MysqlTool(object):
             print(e.__class__.__name__, ":", e)
         self.cursor = self.conn.cursor()
 
+    def reconnect(self) -> None:
+        self.conn = connect(
+            user=self.username,
+            password=self.password,
+            database=self.database,
+            host=self.host,
+            port=self.port
+        )
+
     def get_all_blog_by_admin(self):
         try:
             self.cursor = self.conn.cursor()
@@ -37,7 +46,8 @@ class MysqlTool(object):
     def get_all_blog(self):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute('select * from blog where status = 0 or status = 3')
+            self.cursor.execute(
+                'select * from blog where status = 0 or status = 3')
             li = self.cursor.fetchall()
             self.conn.commit()
             self.cursor.close()
@@ -61,7 +71,8 @@ class MysqlTool(object):
     def search_blog(self, keyword):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f'select * from blog where title like "%{keyword}%" and status = 0')
+            self.cursor.execute(
+                f'select * from blog where title like "%{keyword}%" and status = 0')
             li = self.cursor.fetchall()
             self.conn.commit()
             self.cursor.close()
@@ -121,7 +132,8 @@ class MysqlTool(object):
     def add_user(self, mail, passwd):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"insert into user(password, mail,status,report)values ('{passwd}','{mail}',0,0)")
+            self.cursor.execute(
+                f"insert into user(password, mail,status,report)values ('{passwd}','{mail}',0,0)")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -146,7 +158,8 @@ class MysqlTool(object):
     def del_blog(self, bid, uid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"delete from blog where uid={uid} and bid={bid};")
+            self.cursor.execute(
+                f"delete from blog where uid={uid} and bid={bid};")
             self.cursor.execute(f'delete from comment where bid ={bid}')
             self.conn.commit()
             self.cursor.close()
@@ -172,11 +185,13 @@ class MysqlTool(object):
     def upd_user(self, uid, mail, password, new_mail):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"update user set mail = '{new_mail}',password='{password}' where uid = {uid} ;")
+            self.cursor.execute(
+                f"update user set mail = '{new_mail}',password='{password}' where uid = {uid} ;")
             self.conn.commit()
             if mail != new_mail:
                 self.cursor = self.conn.cursor()
-                self.cursor.execute(f"update blog set umail = '{new_mail}' where uid = {uid};")
+                self.cursor.execute(
+                    f"update blog set umail = '{new_mail}' where uid = {uid};")
                 # a = 1/0
                 self.conn.commit()
             self.cursor.close()
@@ -191,7 +206,8 @@ class MysqlTool(object):
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"delete from user where uid={uid};")
             self.conn.commit()
-            self.cursor.execute(f"update blog set umail='用户已注销' where uid = {uid};")
+            self.cursor.execute(
+                f"update blog set umail='用户已注销' where uid = {uid};")
             # a = 1/0
             self.conn.commit()
             self.cursor.close()
@@ -216,7 +232,8 @@ class MysqlTool(object):
     def ban_user(self, uid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f'update user set status = 1 where uid = {uid}')
+            self.cursor.execute(
+                f'update user set status = 1 where uid = {uid}')
             self.conn.commit()
             self.cursor.close()
             return True
@@ -228,7 +245,8 @@ class MysqlTool(object):
     def deban_user(self, uid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f'update user set status = 0 where uid = {uid}')
+            self.cursor.execute(
+                f'update user set status = 0 where uid = {uid}')
             self.conn.commit()
             self.cursor.close()
             return True
@@ -240,7 +258,8 @@ class MysqlTool(object):
     def ban_blog(self, bid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f'update blog set status = 2 where bid = {bid}')
+            self.cursor.execute(
+                f'update blog set status = 2 where bid = {bid}')
             self.conn.commit()
             self.cursor.close()
             return True
@@ -252,7 +271,8 @@ class MysqlTool(object):
     def deban_blog(self, bid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f'update blog set status = 1 where bid = {bid}')
+            self.cursor.execute(
+                f'update blog set status = 1 where bid = {bid}')
             self.conn.commit()
             self.cursor.close()
             return True
@@ -264,7 +284,8 @@ class MysqlTool(object):
     def add_comment(self, content, umail, bid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"insert into comment (content, umail, bid) values ('{content}','{umail}',{bid});")
+            self.cursor.execute(
+                f"insert into comment (content, umail, bid) values ('{content}','{umail}',{bid});")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -276,7 +297,8 @@ class MysqlTool(object):
     def ban_comment(self, bid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"update blog set comment = 1 where bid ={bid}")
+            self.cursor.execute(
+                f"update blog set comment = 1 where bid ={bid}")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -288,7 +310,8 @@ class MysqlTool(object):
     def deban_comment(self, bid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"update blog set comment = 0 where bid ={bid}")
+            self.cursor.execute(
+                f"update blog set comment = 0 where bid ={bid}")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -300,7 +323,8 @@ class MysqlTool(object):
     def report_user(self, mail):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"update user set report = report+1 where mail ='{mail}'")
+            self.cursor.execute(
+                f"update user set report = report+1 where mail ='{mail}'")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -312,7 +336,8 @@ class MysqlTool(object):
     def report_blog(self, bid):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"update blog set report = report+1 where bid ={bid}")
+            self.cursor.execute(
+                f"update blog set report = report+1 where bid ={bid}")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -328,7 +353,8 @@ class MysqlTool(object):
             col = 'bid'
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f"update {table} set report = 0 where {col} ={id}")
+            self.cursor.execute(
+                f"update {table} set report = 0 where {col} ={id}")
             self.conn.commit()
             self.cursor.close()
             return True
@@ -340,7 +366,8 @@ class MysqlTool(object):
     def user_search_blog(self, uid, keyword):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor.execute(f'select * from blog where title like "%{keyword}%" and uid = {uid}')
+            self.cursor.execute(
+                f'select * from blog where title like "%{keyword}%" and uid = {uid}')
             li = self.cursor.fetchall()
             self.conn.commit()
             self.cursor.close()

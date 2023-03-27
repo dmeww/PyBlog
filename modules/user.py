@@ -125,3 +125,8 @@ def reportUser():
         return render_template('result.html', msg='举报成功!')
     else:
         return render_template('result.html', msg='举报失败,请查看服务器日志')
+
+@user.route('/reload')
+def reloadDB():
+    Sql.reconnect()
+    return render_template('result.html',msg='数据库重连成功')
